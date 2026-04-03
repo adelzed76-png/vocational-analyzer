@@ -1,0 +1,59 @@
+name: Build Windows EXE
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        env:
+          FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+        env:
+          FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+      - name: Install dependencies
+        run: npm install
+        env:
+          FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+      - name: Build project
+        run: npm run build
+        env:
+          FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+      - name: Create dist folder
+        run: mkdir dist
+        env:
+          FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+      - name: Package EXE
+        run: |
+          npm install --global pkg
+          pkg . --targets node24-win-x64 --output dist/MyApp.exe
+        env:
+          FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+      - name: List dist contents
+        run: dir dist
+        env:
+          FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+      - name: Upload EXE
+        uses: actions/upload-artifact@v4
+        with:
+          name: MyApp-Windows
+          path: dist/MyApp.exe
+        env:
+          FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
