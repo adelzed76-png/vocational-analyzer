@@ -9,6 +9,8 @@ on:
 jobs:
   build:
     runs-on: windows-latest
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true  # يجبر Actions على Node.js 24
 
     steps:
       - name: Checkout repo
@@ -17,7 +19,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '24'
 
       - name: Install dependencies
         run: npm install
@@ -31,7 +33,7 @@ jobs:
       - name: Package EXE
         run: |
           npm install --global pkg
-          pkg . --targets node20-win-x64 --output dist/MyApp.exe
+          pkg . --targets node24-win-x64 --output dist/MyApp.exe
 
       - name: List dist contents
         run: dir dist
